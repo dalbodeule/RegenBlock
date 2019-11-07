@@ -34,6 +34,7 @@
     </system>
   </component>
   <component name="ProjectId" id="1TINuPAcjnJFi0n27qk1EgwuDFV" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
@@ -94,6 +95,7 @@
       <workItem from="1573143874383" duration="83000" />
       <workItem from="1573144015752" duration="908000" />
       <workItem from="1573144996522" duration="2243000" />
+      <workItem from="1573147258653" duration="272000" />
     </task>
     <servers />
   </component>
