@@ -6,23 +6,31 @@ import java.util.*
 import org.bukkit.*
 import space.mori.regenblock.RegenBlock
 import org.bukkit.entity.Player
-
+import space.mori.regenblock.util.BlockList
 
 
 class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         return if (sender !is Player) {
-            this.plugin.log!!.info("/rb is only available in game.")
+            plugin.log!!.info("/rb is only available in game.")
             true
         } else if (args.isEmpty() || args[0] == "help" || !SubCommands.keys.contains(args[0])) {
-            false
+            plugin.log!!.sendPlayerNormal(sender,"RegenBlock commands")
+            SubCommands.forEach {
+                plugin.log!!.sendPlayerNormal(sender, "${command.name} ${it.value.name} ${it.value.parameter} - ${it.value.description}")
+            }
+            true
         } else {
             SubCommands[args[0]]!!.commandExecutor(sender, command, label, args)
         }
     }
 
-    override val SubCommands: Map<String, SubCommand> = listOf<SubCommand>(
-        object: SubCommand ("monitor", "", "") {
+    override val SubCommands: Map<String, SubCommand> = listOf(
+        object: SubCommand (
+            "monitor",
+            "Monitor some place",
+            "[break/place] [true/false]"
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 if (args.size <= 2) {
                     plugin.log!!.sendPlayerNormal(
@@ -54,7 +62,7 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
                 val arg = mutableListOf<String>()
 
-                if (args.size < 2) {
+                if (args.size <= 2) {
                     listOf("", "break", "place").forEach {
                         arg.add(it)
                     }
@@ -67,16 +75,11 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 return arg
             }
         },
-        object: SubCommand ("test", "", "") {
-            override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-                return true
-            }
-
-            override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
-                return mutableListOf()
-            }
-        },
-        object: SubCommand ("reload", "", "") {
+        object: SubCommand (
+            "reload",
+            "restores all blocks in queue and reloads the configuration file",
+            ""
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String> ): Boolean {
                 plugin.log!!.sendPlayerNormal(sender as Player, "RegenBlock is reloading settings.")
                 plugin.configuration!!.reload()
@@ -89,31 +92,49 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 return mutableListOf()
             }
         },
-        object: SubCommand ("blacklist", "", "") {
+        object: SubCommand (
+            "blacklist",
+            "lists, adds, removes blacklisted blocks for all regions.",
+            "[add/remove] block block block..."
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+                val player = sender as Player
+                
                 if (args.size < 2) {
                     plugin.log!!.sendPlayerNormal(
-                        sender as Player,
+                        player,
                         StringBuilder().append(plugin.configuration!!.listBlacklistBlock()).toString()
                     )
                     return true
                 }
                 if (args.size < 3) {
-                    printUse(sender as Player, RootCommand.blacklist)
+                    printUse(player, RootCommand.blacklist)
                     return true
                 }
                 if (args[1].equals("add", ignoreCase = true)) {
-                    plugin.configuration!!.addBlacklistBlock((sender as Player).inventory.itemInMainHand.type)
+                    for (i in 2 until args.size) {
+                        val material = Material.getMaterial(args[i])
+
+                        if (material != null) {
+                            plugin.configuration!!.addBlacklistBlock(material)
+                        }
+                    }
                 } else {
                     if (!args[1].equals("remove", ignoreCase = true)) {
-                        printUse(sender as Player, RootCommand.blacklist)
+                        printUse(player, RootCommand.blacklist)
                         return true
                     }
-                    plugin.configuration!!.removeBlacklistBlock(Material.getMaterial(args[2]))
+                    for (i in 2 until args.size) {
+                        val material = Material.getMaterial(args[i])
+
+                        if (material != null) {
+                            plugin.configuration!!.removeBlacklistBlock(material)
+                        }
+                    }
                 }
                 plugin.log!!.sendPlayerNormal(
-                    sender as Player,
-                    "Blacklist updated. " + plugin.configuration!!.listBlacklistBlock()!!
+                    player,
+                    "Blacklist updated. " + plugin.configuration!!.listBlacklistBlock()
                 )
 
                 return true
@@ -122,27 +143,37 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
                 var arg = mutableListOf<String>()
 
-                if (args.size < 2) {
+                if (args.size <= 2) {
                     listOf("", "add", "remove").forEach {
                         arg.add(it)
                     }
                 } else if (args[1] == "remove") {
-                    arg = plugin.configuration!!.listBlacklistBlock()?.toMutableList() ?: mutableListOf<String>()
+                    arg = plugin.configuration!!.listBlacklistBlock()?.toMutableList() ?: mutableListOf()
+                } else if (args[1] == "add") {
+                    arg = BlockList.toMutableList()
                 }
 
                 return arg
             }
         },
-        object: SubCommand ("listselection", "", "") {
+        object: SubCommand (
+            "listselection",
+            "Lists player's current selection",
+            ""
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-                return executeListselection(args as Array<String>, sender as Player)
+                return listselection(sender as Player)
             }
 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
                 return mutableListOf()
             }
         },
-        object: SubCommand ("edit", "", "") {
+        object: SubCommand (
+            "edit",
+            "Puts you into editor mode that allows you to change blocks in a region",
+            ""
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -161,7 +192,11 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 return mutableListOf()
             }
         },
-        object: SubCommand ("select", "", "") {
+        object: SubCommand (
+            "select",
+            "Toggles selection mode for the player. If ex/ey/ez is specified selection will be expanded in that direction. Y is vertical.",
+            "[ex,ey,ez]"
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -187,19 +222,19 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                     if (args[1].equals("ex", ignoreCase = true)) {
                         plugin.listenerPlayer!!.playerSelectionLeft[player.name]!!.x = -1000000.0
                         plugin.listenerPlayer!!.playerSelectionRight[player.name]!!.x = 1000000.0
-                        executeListselection(args as Array<String>, player)
+                        listselection(sender)
                         return true
                     }
                     if (args[1].equals("ey", ignoreCase = true)) {
                         plugin.listenerPlayer!!.playerSelectionLeft[player.name]!!.y = 0.0
                         plugin.listenerPlayer!!.playerSelectionRight[player.name]!!.y = 254.0
-                        executeListselection(args as Array<String>, player)
+                        listselection(sender)
                         return true
                     }
                     if (args[1].equals("ez", ignoreCase = true)) {
                         plugin.listenerPlayer!!.playerSelectionLeft[player.name]!!.z = -1000000.0
                         plugin.listenerPlayer!!.playerSelectionRight[player.name]!!.z = 1000000.0
-                        executeListselection(args as Array<String>, player)
+                        listselection(sender)
                         return true
                     }
                     printUse(player, RootCommand.select)
@@ -211,7 +246,7 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
                 val arg = mutableListOf<String>()
 
-                if (args.size < 2) {
+                if (args.size <= 2) {
                     listOf("", "ex", "ey", "ez").forEach {
                         arg.add(it)
                     }
@@ -220,7 +255,11 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 return arg
             }
         },
-        object: SubCommand ("create", "", "") {
+        object: SubCommand (
+            "create",
+            "creates a new region at points selected with optional re-spawn time, default otherwise.",
+            "(name) [re-spawn time]"
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -268,7 +307,11 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 return mutableListOf()
             }
         },
-        object: SubCommand ("remove", "", "") {
+        object: SubCommand (
+            "remove",
+            "removes region from the list.",
+            "remove (name)"
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -291,14 +334,18 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
                 var arg = mutableListOf<String>()
 
-                if(args.size < 2) {
+                if(args.size <= 2) {
                    arg = plugin.configuration!!.listRegions()?.toMutableList() ?: mutableListOf()
                 }
 
                 return arg
             }
         },
-        object: SubCommand ("modify", "", "") {
+        object: SubCommand (
+            "modify",
+            "",
+            "(both/time) (name) [re-spawn time] modify existing region's location and time."
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -306,52 +353,56 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                     printUse(player, RootCommand.modify)
                     return true
                 }
-                if (args[1].equals("time", ignoreCase = true)) {
-                    val regionName = args[2].toLowerCase()
-                    var respawnTime = 1
-                    try {
-                        respawnTime = Integer.parseInt(args[3])
-                    } catch (ex: NumberFormatException) {
-                    }
-
-                    if (respawnTime < 1) {
-                        respawnTime = plugin.configuration!!.regionDefaultRespawnTime
-                    }
-                    plugin.configuration!!.setRegionRespawnTime(regionName, respawnTime)
-                    plugin.log!!.sendPlayerNormal(
-                        player,
-                        "Region " + regionName + " was updated to respawn time of " + respawnTime + "s."
-                    )
-                    plugin.log!!.info(player.name.toString() + " updated region " + regionName + " to respawn time of " + respawnTime + "s.")
-                } else if (args[1].equals("both", ignoreCase = true)){
-                    val regionName = args[2].toLowerCase()
-                    if (plugin.configuration!!.getRegionName(regionName) == null) {
-                        plugin.log!!.sendPlayerWarn(player, "Region name does not exist.")
-                        return true
-                    }
-                    var respawnTime = 1
-                    if (args.size == 4) {
+                when {
+                    args[1].equals("time", ignoreCase = true) -> {
+                        val regionName = args[2].toLowerCase()
+                        var respawnTime = 1
                         try {
                             respawnTime = Integer.parseInt(args[3])
-                        } catch (ex2: NumberFormatException) {
+                        } catch (ex: NumberFormatException) {
                         }
 
                         if (respawnTime < 1) {
+                            respawnTime = plugin.configuration!!.regionDefaultRespawnTime
+                        }
+                        plugin.configuration!!.setRegionRespawnTime(regionName, respawnTime)
+                        plugin.log!!.sendPlayerNormal(
+                            player,
+                            "Region " + regionName + " was updated to respawn time of " + respawnTime + "s."
+                        )
+                        plugin.log!!.info(player.name.toString() + " updated region " + regionName + " to respawn time of " + respawnTime + "s.")
+                    }
+                    args[1].equals("both", ignoreCase = true) -> {
+                        val regionName = args[2].toLowerCase()
+                        if (plugin.configuration!!.getRegionName(regionName) == null) {
+                            plugin.log!!.sendPlayerWarn(player, "Region name does not exist.")
+                            return true
+                        }
+                        var respawnTime = 1
+                        if (args.size == 4) {
+                            try {
+                                respawnTime = Integer.parseInt(args[3])
+                            } catch (ex2: NumberFormatException) {
+                            }
+
+                            if (respawnTime < 1) {
+                                respawnTime = plugin.configuration!!.getRegionRespawnTime(regionName)!!
+                            }
+                        } else {
                             respawnTime = plugin.configuration!!.getRegionRespawnTime(regionName)!!
                         }
-                    } else {
-                        respawnTime = plugin.configuration!!.getRegionRespawnTime(regionName)!!
+                        plugin.configuration!!.setRegion(
+                            regionName,
+                            respawnTime,
+                            plugin.listenerPlayer!!.playerSelectionRight[player.name]!!,
+                            plugin.listenerPlayer!!.playerSelectionLeft[player.name]!!
+                        )
+                        plugin.log!!.sendPlayerRegionInfo(player, regionName)
                     }
-                    plugin.configuration!!.setRegion(
-                        regionName,
-                        respawnTime,
-                        plugin.listenerPlayer!!.playerSelectionRight[player.name]!!,
-                        plugin.listenerPlayer!!.playerSelectionLeft[player.name]!!
-                    )
-                    plugin.log!!.sendPlayerRegionInfo(player, regionName)
-                } else {
-                    printUse(player, RootCommand.modify)
-                    return true
+                    else -> {
+                        printUse(player, RootCommand.modify)
+                        return true
+                    }
                 }
 
                 return true
@@ -360,7 +411,7 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
                 var arg = mutableListOf<String>()
 
-                if (args.size < 2) {
+                if (args.size <= 2) {
                     listOf("time", "both").forEach {
                         arg.add(it)
                     }
@@ -371,7 +422,11 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 return arg
             }
         },
-        object: SubCommand ("list", "", "") {
+        object: SubCommand (
+            "list",
+            "lists current regions",
+            ""
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -388,7 +443,11 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 return mutableListOf()
             }
         },
-        object: SubCommand ("rblacklist", "", "") {
+        object: SubCommand (
+            "rblacklist",
+            "lists, adds, removes blacklisted blocks for the region.",
+            "(name) [add/remove] block block block..."
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -409,13 +468,25 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                     return true
                 }
                 if (args[2].equals("add", ignoreCase = true)) {
-                    plugin.configuration!!.addRegionBlacklistBlock(regionName, player.inventory.itemInMainHand.type)
+                    for (i in 3 until args.size) {
+                        val material = Material.getMaterial(args[i])
+
+                        if (material != null) {
+                            plugin.configuration!!.addRegionBlacklistBlock(args[2], material)
+                        }
+                    }
                 } else {
-                    if (!args[2].equals("remove", ignoreCase = true) || args.size == 3) {
+                    if (!args[2].equals("remove", ignoreCase = true)) {
                         printUse(player, RootCommand.rblacklist)
                         return true
                     }
-                    plugin.configuration!!.removeRegionBlacklistBlock(regionName, Material.getMaterial(args[3]))
+                    for (i in 3 until args.size) {
+                        val material = Material.getMaterial(args[i])
+
+                        if (material != null) {
+                            plugin.configuration!!.removeRegionBlacklistBlock(args[2], material)
+                        }
+                    }
                 }
                 plugin.log!!.sendPlayerNormal(player, "Region's blacklist updated.")
 
@@ -425,20 +496,23 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
                 var arg = mutableListOf<String>()
 
-                if (args.size < 2) {
-                    arg = plugin.configuration!!.listRegions()?.toMutableList() ?: mutableListOf()
-                } else if (args.size < 3) {
-                    listOf("add", "remove").forEach {
+                when {
+                    args.size <= 2 -> arg = plugin.configuration!!.listRegions()?.toMutableList() ?: mutableListOf()
+                    args.size <= 3 -> listOf("add", "remove").forEach {
                         arg.add(it)
                     }
-                } else if (args[2] == "remove" && args.size < 4) {
-                    arg = plugin.configuration!!.listRegionBlacklistBlock(args[1])?.toMutableList() ?: mutableListOf()
+                    args[2] == "remove" -> arg = plugin.configuration!!.listRegionBlacklistBlock(args[1])?.toMutableList() ?: mutableListOf()
+                    args[2] == "add" -> arg = BlockList.toMutableList()
                 }
 
                 return arg
             }
         },
-        object: SubCommand ("type", "", "") {
+        object: SubCommand (
+            "type",
+            "changes the region's type. 0 - normal, 1 - regen up only, with randomization based on spawnblocks.",
+            "(name) (type - 0,1)"
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -476,7 +550,7 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
                 var arg = mutableListOf<String>()
 
-                if (args.size < 2) {
+                if (args.size <= 2) {
                         arg = plugin.configuration!!.listRegions()?.toMutableList() ?: mutableListOf()
                 } else {
                     listOf("0", "1").forEach {
@@ -487,7 +561,11 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 return arg
             }
         },
-        object: SubCommand ("sync", "", "") {
+        object: SubCommand (
+            "sync",
+            "changes the region's sync state. 0 - blocks repop separately, 1 - all at once based on first block broken, 2 - all at once based on last block broken, 3 - Same as 2, but preserving the order.",
+            "(name) (0/1/2/3)"
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -522,7 +600,7 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
                 var arg = mutableListOf<String>()
 
-                if (args.size < 2) {
+                if (args.size <= 2) {
                     arg = plugin.configuration!!.listRegions()?.toMutableList() ?: mutableListOf()
                 } else {
                     listOf("0", "1", "2", "3").forEach {
@@ -533,7 +611,11 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 return arg
             }
         },
-        object: SubCommand ("alarm", "", "") {
+        object: SubCommand (
+            "alarm",
+            "changes the region's alarm settings.",
+            "(time/message/radius) (name) (value)"
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -581,12 +663,12 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
                 var arg = mutableListOf<String>()
 
-            if (args.size < 2) {
+            if (args.size <= 2) {
                     listOf("time", "message", "radius").forEach {
                         arg.add(it)
                     }
             } else if (args[1] == "time" || args[1] == "message" || args[1] == "radius") {
-                if(args.size < 3) {
+                if(args.size <= 3) {
                     arg = plugin.configuration!!.listRegions()?.toMutableList() ?: mutableListOf()
                 }
             }
@@ -594,7 +676,11 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 return arg
             }
         },
-        object: SubCommand ("feedback", "", "") {
+        object: SubCommand (
+            "feedback",
+            "region: changes the region's feedback type, set: sets string sent to player during region feedback. Use TIME to show re-spawn time.",
+            "(region (name) (feedback type [0,1,2])/set (string))"
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -602,49 +688,53 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                     printUse(player, RootCommand.feedback)
                     return true
                 }
-                if (args[1].equals("set", ignoreCase = true)) {
-                    var feedbackString = ""
-                    for (i in 3 until args.size) {
-                        feedbackString = feedbackString + args[i] + " "
-                    }
-                    if (feedbackString.isNotEmpty()) {
-                        plugin.configuration!!.feedbackString = feedbackString
-                        plugin.log!!.sendPlayerNormal(player, "Feedback string was set to [$feedbackString]")
-                    } else {
-                        plugin.log!!.sendPlayerWarn(player, "Feedback string was not changed.")
-                    }
-                    return true
-                } else if(args[1].equals("region", ignoreCase = true)) {
-                    val regionName = args[2].toLowerCase()
-                    if (plugin.configuration!!.getRegionName(regionName) == null) {
-                        plugin.log!!.sendPlayerWarn(player, "Region $regionName does not exist.")
+                when {
+                    args[1].equals("set", ignoreCase = true) -> {
+                        var feedbackString = ""
+                        for (i in 3 until args.size) {
+                            feedbackString = feedbackString + args[i] + " "
+                        }
+                        if (feedbackString.isNotEmpty()) {
+                            plugin.configuration!!.feedbackString = feedbackString
+                            plugin.log!!.sendPlayerNormal(player, "Feedback string was set to [$feedbackString]")
+                        } else {
+                            plugin.log!!.sendPlayerWarn(player, "Feedback string was not changed.")
+                        }
                         return true
                     }
-                    var feedbackId = 0
-                    try {
-                        feedbackId = Integer.parseInt(args[3])
-                    } catch (ex: NumberFormatException) {
+                    args[1].equals("region", ignoreCase = true) -> {
+                        val regionName = args[2].toLowerCase()
+                        if (plugin.configuration!!.getRegionName(regionName) == null) {
+                            plugin.log!!.sendPlayerWarn(player, "Region $regionName does not exist.")
+                            return true
+                        }
+                        var feedbackId = 0
+                        try {
+                            feedbackId = Integer.parseInt(args[3])
+                        } catch (ex: NumberFormatException) {
+                        }
+
+                        feedbackId = plugin.configuration!!.setRegionFeedbackID(regionName, feedbackId)
+                        plugin.log!!.sendPlayerNormal(player, "Region $regionName feedback type was set to $feedbackId")
+
+                        return true
                     }
-
-                    feedbackId = plugin.configuration!!.setRegionFeedbackID(regionName, feedbackId)
-                    plugin.log!!.sendPlayerNormal(player, "Region $regionName feedback type was set to $feedbackId")
-
-                    return true
-                } else {
-                    printUse(player, RootCommand.feedback)
-                    return true
+                    else -> {
+                        printUse(player, RootCommand.feedback)
+                        return true
+                    }
                 }
             }
 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
                 var arg = mutableListOf<String>()
 
-                if (args.size < 2) {
+                if (args.size <= 2) {
                     listOf("set", "region").forEach {
                         arg.add(it)
                     }
                 } else if(args[1] == "region") {
-                    if (args.size < 3) {
+                    if (args.size <= 3) {
                         arg = plugin.configuration!!.listRegions()?.toMutableList() ?: mutableListOf()
                     } else {
                         listOf("0", "1", "2").forEach {
@@ -656,100 +746,122 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 return arg
             }
         },
-        object: SubCommand ("spawnblock", "", "") {
+        object: SubCommand (
+            "spawnblock",
+            "list: lists region's spawn blocks, add: adds new blocks with spawn chance, remove: removes blocks.",
+            "(list/add [block chance block chance...]/remove [block block block...])"
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
-                if (args.size < 2) {
+                if (args.size < 3) {
                     printUse(player, RootCommand.spawnblock)
                     return true
                 }
-                if (args[1].equals("add", ignoreCase = true)) {
-                    val regionName = args[2].toLowerCase()
-                    if (plugin.configuration!!.getRegionName(regionName) == null) {
-                        plugin.log!!.sendPlayerWarn(player, "Region $regionName does not exist.")
-                        return true
-                    }
-                    if (args.size < 5) {
-                        printUse(player, RootCommand.spawnblock)
-                        return true
-                    }
-                    var type: Material? = Material.AIR
-                    val item = player.inventory.itemInMainHand
-                    try {
-                        type = item.type
-
-                        if (!type!!.isBlock) {
-                            plugin.log!!.sendPlayerWarn(player, item.toString() + "is not block")
+                when {
+                    args[1].equals("add", ignoreCase = true) -> {
+                        val regionName = args[2].toLowerCase()
+                        if (plugin.configuration!!.getRegionName(regionName) == null) {
+                            plugin.log!!.sendPlayerWarn(player, "Region $regionName does not exist.")
+                            return true
                         }
-                    } catch (ex: NumberFormatException) {
-                    }
+                        if (args.size < 5) {
+                            printUse(player, RootCommand.spawnblock)
+                            return true
+                        }
+                        var i = 3
+                        while (i + 1 < args.size) {
+                            val material = Material.getMaterial(args[i])
 
-                    var chance = 0
-                    try {
-                        chance = Integer.parseInt(args[3])
-                    } catch (ex2: NumberFormatException) {
-                    }
+                            var chance = 0
+                            try {
+                                chance = Integer.parseInt(args[i + 1])
+                            } catch (ex2: NumberFormatException) {
+                            }
 
-                    if (type != null && chance > 0) {
-                        plugin.configuration!!.setRegionSpawnBlock(regionName, type!!, chance)
+                            if (material != null && chance > 0) {
+                                plugin.configuration!!.setRegionSpawnBlock(regionName, material, chance)
+                            }
+                            i += 2
+                        }
+                        plugin.log!!.sendPlayerNormal(
+                            player,
+                            "Region spawn blocks: " + plugin.configuration!!.getRegionSpawnBlocks(regionName)!!
+                        )
                     }
-                    plugin.log!!.sendPlayerNormal(
-                        player,
-                        "Region spawn blocks: " + plugin.configuration!!.getRegionSpawnBlocks(regionName)
-                    )
-                } else if (args[1].equals("remove", ignoreCase = true)) {
-                    val regionName = args[2].toLowerCase()
-                    if (plugin.configuration!!.getRegionName(regionName) == null) {
-                        plugin.log!!.sendPlayerWarn(player, "Region $regionName does not exist.")
-                        return true
+                    args[1].equals("remove", ignoreCase = true) -> {
+                        val regionName = args[2].toLowerCase()
+                        if (plugin.configuration!!.getRegionName(regionName) == null) {
+                            plugin.log!!.sendPlayerWarn(player, "Region $regionName does not exist.")
+                            return true
+                        }
+                        if (args.size < 4) {
+                            printUse(player, RootCommand.spawnblock)
+                            return true
+                        }
+                        for (i in 3 until args.size) {
+                            val material = Material.getMaterial(args[i])
+
+                            if (material != null) {
+                                plugin.configuration!!.removeRegionSpawnBlock(regionName, material)
+                            }
+                        }
+                        plugin.log!!.sendPlayerNormal(
+                            player,
+                            "Region spawn blocks: " + plugin.configuration!!.getRegionSpawnBlocks(regionName)!!
+                        )
                     }
-                    if (args.size < 4) {
+                    args[1].equals("list", ignoreCase = true) -> {
+                        val regionName = args[2].toLowerCase()
+                        if (plugin.configuration!!.getRegionName(regionName) == null) {
+                            plugin.log!!.sendPlayerWarn(player, "Region $regionName does not exist.")
+                            return true
+                        }
+                        plugin.log!!.sendPlayerNormal(
+                            player,
+                            "Region spawn blocks: " + plugin.configuration!!.getRegionSpawnBlocks(regionName)!!
+                        )
+                    }
+                    else -> {
                         printUse(player, RootCommand.spawnblock)
                         return true
                     }
-                    val type = Material.getMaterial(args[3])
-                    if (type != null) {
-                        plugin.configuration!!.removeRegionSpawnBlock(regionName, type)
-                    }
-                    plugin.log!!.sendPlayerNormal(
-                        player,
-                        "Region spawn blocks: " + plugin.configuration!!.getRegionSpawnBlocks(regionName)
-                    )
-                } else {
-                    val regionName = args[1].toLowerCase()
-                    if (plugin.configuration!!.getRegionName(regionName) == null) {
-                        plugin.log!!.sendPlayerWarn(player, "Region $regionName does not exist.")
-                        return true
-                    }
-                    plugin.log!!.sendPlayerNormal(
-                        player,
-                        "Region spawn blocks: " + plugin.configuration!!.getRegionSpawnBlocks(regionName)
-                    )
                 }
 
                 return true
             }
 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
-                val arg = mutableListOf<String>()
+                var arg = mutableListOf<String>()
 
-                if (args.size < 2) {
-                    listOf("", "add", "remove").forEach {
+                if (args.size <= 2) {
+                    listOf("add", "remove", "list").forEach {
                         arg.add(it)
                     }
                 } else if (args[1] == "remove") {
-                    if (plugin.configuration!!.getRegionName(args[2]) != null) {
-                        plugin.configuration!!.getRegionSpawnBlocks(args[2])!!.keys!!.forEach {
-                                i -> arg.add(i.toString())
-                        }
+                    if (args.size <= 3) {
+                        arg = plugin.configuration!!.listRegions()?.toMutableList() ?: mutableListOf()
+                    } else {
+                        arg = plugin.configuration!!.getRegionSpawnBlocks(args[2])!!.keys.map { it.name }.toMutableList()
                     }
+                } else if (args[1] == "add") {
+                    if (args.size <= 3) {
+                        arg = plugin.configuration!!.listRegions()?.toMutableList() ?: mutableListOf()
+                    } else if (args.size%2 == 0) {
+                        arg = BlockList.toMutableList()
+                    }
+                } else if (args[1] == "list") {
+                    arg = plugin.configuration!!.listRegions()?.toMutableList() ?: mutableListOf()
                 }
 
                 return arg
             }
         },
-        object: SubCommand ("info", "", "") {
+        object: SubCommand (
+            "info",
+            "Print out information about the region in front of the character",
+            ""
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -778,7 +890,11 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 return arg
             }
         },
-        object: SubCommand ("repop", "", "") {
+        object: SubCommand (
+            "repop",
+            "Respawns all blocks in a given region.",
+            "(name)"
+        ) {
             override fun commandExecutor(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
                 val player = sender as Player
 
@@ -799,7 +915,7 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
             override fun tabCompleter(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
                 var arg = mutableListOf<String>()
 
-                if (args.size < 2) {
+                if (args.size <= 2) {
                     arg = plugin.configuration!!.listRegions()?.toMutableList() ?: mutableListOf()
                 }
 
@@ -808,7 +924,7 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
         }
     ).associateBy { it.name }.toSortedMap()
 
-    private fun executeListselection(args: Array<String>, player: Player): Boolean {
+    private fun listselection(player: Player): Boolean {
         var right = "Nothing is selected"
         var left = "Nothing is selected"
         if (plugin.listenerPlayer!!.playerSelectionLeft.containsKey(player.name)) {
@@ -831,7 +947,7 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
             RootCommand.blacklist -> {
                 plugin.log!!.sendPlayerWarn(
                     player,
-                    "Usage: /rb blacklist [add/remove id] - lists, adds, removes blacklisted block IDs for all regions."
+                    "Usage: /rb blacklist [add/remove] [block] - lists, adds, removes blacklisted block IDs for all regions."
                 )
             }
             RootCommand.create -> {
@@ -856,7 +972,7 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
             RootCommand.rblacklist -> {
                 plugin.log!!.sendPlayerWarn(
                     player,
-                    "Usage: /rb rblacklist (name) [add/remove id] - lists, adds, removes blacklisted block IDs for the region."
+                    "Usage: /rb rblacklist (name) [add/remove] [block] - lists, adds, removes blacklisted block IDs for the region."
                 )
             }
             RootCommand.type -> {
@@ -890,14 +1006,16 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 )
             }
             RootCommand.spawnblock -> {
-                plugin.log!!.sendPlayerWarn(player, "Usage: /rb spawnblock (name) - lists region's spawn blocks.")
                 plugin.log!!.sendPlayerWarn(
                     player,
-                    "Usage: /rb spawnblock add (name) [chance] - adds new blocks with spawn chance."
+                    "Usage: /rb spawnblock list (name) - lists region's spawn blocks.")
+                plugin.log!!.sendPlayerWarn(
+                    player,
+                    "Usage: /rb spawnblock add (name) [block chance block chance...] - adds new blocks with spawn chance."
                 )
                 plugin.log!!.sendPlayerWarn(
                     player,
-                    "Usage: /rb spawnblock remove (name) [id] - removes blocks."
+                    "Usage: /rb spawnblock remove (name) [block block block...] - removes blocks."
                 )
             }
             RootCommand.select -> {

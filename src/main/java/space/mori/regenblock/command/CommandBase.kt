@@ -12,12 +12,16 @@ open class CommandBase (
         return true
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): List<String> {
-        return if (args.isEmpty() || !SubCommands.keys.contains(args[0])) {
-            SubCommands.map { it.value.name } as MutableList<String>
-        } else {
-            SubCommands[args[0]]!!.tabCompleter(sender, command, alias, args)
+    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
+        var tabComplete: List<String>
+
+        tabComplete = when {
+            args.isEmpty() -> SubCommands.map { it.value.name }
+            args.size == 1 -> SubCommands.map { it.value.name }.filter { it.startsWith(args[0], ignoreCase = true) }
+            else -> SubCommands[args[0]]!!.tabCompleter(sender, command, alias, args).filter { it.startsWith(args[args.size - 1], ignoreCase = true) }
         }
+
+        return tabComplete.toMutableList()
     }
 }
 

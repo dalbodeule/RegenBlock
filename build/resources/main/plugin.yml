@@ -1,6 +1,6 @@
 main: space.mori.regenblock.RegenBlock
 name: RegenBlock
-version: Beta 5.8
+version: Beta 6.1
 api-version: 1.13
 
 permissions:
@@ -13,24 +13,4 @@ commands:
       description: Main command
       permission: regenblock.self
       usage: |
-          /rb listselection - Lists player's current selection
-          /rb blacklist [add/remove id] - lists, adds, removes blacklisted block IDs for all regions.
-          /rb reload - restores all blocks in queue and reloads the configuration file
-          /rb select [ex,ey,ez] - Toggles selection mode for the player. If ex/ey/ez is specified selection will be expanded in that direction. Y is vertical.
-          /rb edit - Puts you into editor mode that allows you to change blocks in a region
-          /rb info - Print out information about the region in front of the character
-          /rb list - lists current regions
-          /rb create (name) [re-spawn time] - creates a new region at points selected with optional re-spawn time, default otherwise.
-          /rb remove (name) - removes region from the list.
-          /rb type (name) (type - 0,1)- changes the region's type. 0 - normal, 1 - regen up only, with randomization based on spawnblocks
-          /rb sync (name) (0/1/2/3)- changes the region's sync state. 0 - blocks repop separately, 1 - all at once based on first block broken, 2 - all at once based on last block broken, 3 - Same as 2, but preserving the order.
-          /rb modify both (name) [re-spawn time] - modify existing region's location and time.
-          /rb modify time (name) (re-spawn time) - modify existing region's re-spawn time only.
-          /rb rblacklist (name) [add/remove id] - lists, adds, removes blacklisted block IDs for the region.
-          /rb alarm time/message/radius (name) (value)- changes the region's alarm settings.
-          /rb feedback region (name) (feedback type [0,1,2])- changes the region's feedback type.
-          /rb feedback set (string) - sets string sent to player during region feedback. Use TIME to show re-spawn time.
-          /rb spawnblock (name) - lists region's spawn blocks.
-          /rb spawnblock add (name) [chance] - adds new blocks with spawn chance.
-          /rb spawnblock remove (name) [block] - removes blocks.
-          /rb repop (name) - Respawns all blocks in a given region.
+          /rb <command>

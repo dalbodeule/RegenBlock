@@ -91,6 +91,7 @@ class RegenBlockEventListenerCancel(private val plugin: RegenBlock) : Listener {
                 Material.BLACK_BED -> {
                     event.isCancelled = true
                 }
+                else -> {}
             }
         }
     }

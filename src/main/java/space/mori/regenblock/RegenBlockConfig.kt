@@ -296,12 +296,12 @@ class RegenBlockConfig(private val plugin: RegenBlock, private val configFile: F
     }
 
     fun addRegionBlacklistBlock(regionName: String, block: Material) {
-        this.config.set("region.$regionName.blacklist.Type.$block", block as Any)
+        this.config.set("region.$regionName.blacklist.Type.${block.name}", block.name)
         this.save()
     }
 
     fun removeRegionBlacklistBlock(regionName: String, block: Material) {
-        this.config.set("region.$regionName.blacklist.Type.$block", null as Any?)
+        this.config.set("region.$regionName.blacklist.Type.${block.name}", null as Any?)
         this.save()
     }
 
@@ -336,16 +336,16 @@ class RegenBlockConfig(private val plugin: RegenBlock, private val configFile: F
     }
 
     fun setRegionSpawnBlock(regionName: String, type: Material, chance: Int) {
-        this.config.set("region.$regionName.spawnBlocks.$type", chance as Any)
+        this.config.set("region.$regionName.spawnBlocks.${type.name}", chance as Any)
         this.save()
     }
 
     fun getRegionSpawnBlock(regionName: String, type: Material): Int? {
-        return this.config.getInt("region.$regionName.spawnBlocks.$type")
+        return this.config.getInt("region.$regionName.spawnBlocks.${type.name}")
     }
 
     fun removeRegionSpawnBlock(regionName: String, type: Material) {
-        this.config.set("region.$regionName.spawnBlocks.$type", null as Any?)
+        this.config.set("region.$regionName.spawnBlocks.${type.name}", null as Any?)
         this.save()
     }
 
@@ -430,12 +430,12 @@ class RegenBlockConfig(private val plugin: RegenBlock, private val configFile: F
     }
 
     fun removeBlacklistBlock(block: Material) {
-        this.config.set("blacklist.Type.$block", block as Any)
+        this.config.set("blacklist.Type.${block.name}", null as Any?)
         this.save()
     }
 
     fun addBlacklistBlock(block: Material) {
-        this.config.set("blacklist.Type.$block", block as Any)
+        this.config.set("blacklist.Type.${block.name}", block.name as Any)
         this.save()
     }
 

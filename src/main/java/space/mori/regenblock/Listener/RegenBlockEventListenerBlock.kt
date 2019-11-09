@@ -148,21 +148,21 @@ class RegenBlockEventListenerBlock(private val plugin: RegenBlock) : Listener {
         if (regionType == 1 && material != Material.AIR) {
             val spawnBlocksId = this.plugin.configuration!!.getRegionSpawnBlocks(regionName)
             if (spawnBlocksId!!.containsKey(material)) {
-                var i = spawnBlocksId!!.keys.iterator()
+                var i = spawnBlocksId.keys.iterator()
                 var totalChance = 0
                 while (i.hasNext()) {
-                    totalChance += spawnBlocksId!![i.next()]!!
+                    totalChance += spawnBlocksId[i.next()]!!
                 }
                 if (totalChance == 0) {
                     return
                 }
                 val roll = this.rnd.nextInt(totalChance)
                 var type = Material.AIR
-                i = spawnBlocksId!!.keys.iterator()
+                i = spawnBlocksId.keys.iterator()
                 totalChance = 0
                 while (i.hasNext()) {
                     val block = i.next()
-                    val blockIdChance = spawnBlocksId!![block]
+                    val blockIdChance = spawnBlocksId[block]
                     totalChance += blockIdChance!!
                     if (roll <= totalChance && roll >= totalChance - blockIdChance) {
                         type = block
