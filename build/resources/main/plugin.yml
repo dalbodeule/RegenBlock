@@ -1,6 +1,6 @@
 main: space.mori.regenblock.RegenBlock
 name: RegenBlock
-version: Beta 6.1
+version: Beta 6.2
 api-version: 1.13
 
 permissions:
