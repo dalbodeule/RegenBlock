@@ -13,20 +13,18 @@ open class CommandBase (
     }
 
     override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
-        var tabComplete: List<String> = when {
+        return when {
             args.isEmpty() -> SubCommands.map { it.value.name }
             args.size == 1 && SubCommands.keys.any { it.startsWith(args[0], ignoreCase = true) } -> {
                 SubCommands.map { it.value.name }.filter { it.startsWith(args[0], ignoreCase = true) }
             }
-            SubCommands.keys.contains(args[1]) -> {
+            args.size > 1 && SubCommands.keys.contains(args[1]) -> {
                 SubCommands[args[0]]?.tabCompleter(sender, command, alias, args)?.filter {
                     it.startsWith(args[args.size - 1], ignoreCase = true)
                 } ?: listOf()
             }
             else -> listOf()
-        }
-
-        return tabComplete.toMutableList()
+        }.toMutableList()
     }
 }
 

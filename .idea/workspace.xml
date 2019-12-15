@@ -7,9 +7,11 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/space/mori/regenblock/command/CommandBase.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/space/mori/regenblock/command/CommandBase.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/space/mori/regenblock/command/RegenBlockCommandExecutor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/space/mori/regenblock/command/RegenBlockCommandExecutor.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,19 +40,6 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="RegenBlock" type="f1a62948:ProjectNode" />
                 <item name="Source Sets" type="e897c970:GradleViewContributor$SourceSetsNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="RegenBlock" type="f1a62948:ProjectNode" />
-                <item name="Source Sets" type="e897c970:GradleViewContributor$SourceSetsNode" />
-                <item name="main" type="396b929e:GradleViewContributor$SourceSetNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="RegenBlock" type="f1a62948:ProjectNode" />
-                <item name="Source Sets" type="e897c970:GradleViewContributor$SourceSetsNode" />
-                <item name="main" type="396b929e:GradleViewContributor$SourceSetNode" />
-                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -201,6 +190,12 @@
       <workItem from="1573363409888" duration="756000" />
       <workItem from="1575210407212" duration="125000" />
       <workItem from="1575210605722" duration="84000" />
+      <workItem from="1575279194134" duration="16000" />
+      <workItem from="1575461987086" duration="1561000" />
+      <workItem from="1575693539512" duration="8000" />
+      <workItem from="1576241492281" duration="1524000" />
+      <workItem from="1576394159585" duration="50000" />
+      <workItem from="1576394218406" duration="204000" />
     </task>
     <servers />
   </component>
@@ -221,25 +216,33 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state width="1877" height="281" key="GridCell.Tab.0.bottom" timestamp="1575210689417">
+    <state x="640" y="245" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1576394206077">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1575210689417" />
-    <state width="1877" height="281" key="GridCell.Tab.0.center" timestamp="1575210689417">
+    <state x="640" y="245" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1576394206077" />
+    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1575693546382">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1575210689417" />
-    <state width="1877" height="281" key="GridCell.Tab.0.left" timestamp="1575210689417">
+    <state x="740" y="274" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1575693546382" />
+    <state width="1877" height="281" key="GridCell.Tab.0.bottom" timestamp="1575463551387">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1575210689417" />
-    <state width="1877" height="281" key="GridCell.Tab.0.right" timestamp="1575210689417">
+    <state width="1877" height="281" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1575463551387" />
+    <state width="1877" height="281" key="GridCell.Tab.0.center" timestamp="1575463551387">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575210689417" />
-    <state x="461" y="161" key="SettingsEditor" timestamp="1575210431431">
+    <state width="1877" height="281" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1575463551387" />
+    <state width="1877" height="281" key="GridCell.Tab.0.left" timestamp="1575463551387">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="461" y="161" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1575210431431" />
+    <state width="1877" height="281" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1575463551387" />
+    <state width="1877" height="281" key="GridCell.Tab.0.right" timestamp="1575463551387">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="281" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575463551387" />
+    <state x="461" y="161" key="SettingsEditor" timestamp="1576394416602">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="461" y="161" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1576394416602" />
   </component>
 </project>

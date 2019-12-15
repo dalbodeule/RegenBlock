@@ -356,6 +356,10 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                 when {
                     args[1].equals("time", ignoreCase = true) -> {
                         val regionName = args[2].toLowerCase()
+                        if (plugin.configuration!!.getRegionName(regionName) == null) {
+                            plugin.log!!.sendPlayerWarn(player, "Region name does not exist.")
+                            return true
+                        }
                         var respawnTime = 1
                         try {
                             respawnTime = Integer.parseInt(args[3])
@@ -368,9 +372,9 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                         plugin.configuration!!.setRegionRespawnTime(regionName, respawnTime)
                         plugin.log!!.sendPlayerNormal(
                             player,
-                            "Region " + regionName + " was updated to respawn time of " + respawnTime + "s."
+                            "Region $regionName was updated to respawn time of  ${respawnTime}s."
                         )
-                        plugin.log!!.info(player.name.toString() + " updated region " + regionName + " to respawn time of " + respawnTime + "s.")
+                        plugin.log!!.info("${player.name} updated region $regionName to respawn time of ${respawnTime}s.")
                     }
                     args[1].equals("both", ignoreCase = true) -> {
                         val regionName = args[2].toLowerCase()
@@ -398,6 +402,12 @@ class RegenBlockCommandExecutor(private val plugin: RegenBlock) : CommandBase() 
                             plugin.listenerPlayer!!.playerSelectionLeft[player.name]!!
                         )
                         plugin.log!!.sendPlayerRegionInfo(player, regionName)
+
+                        plugin.log!!.sendPlayerNormal(
+                            player,
+                            "Region $regionName was updated to area with respawn time of  ${respawnTime}s."
+                        )
+                        plugin.log!!.info("${player.name} updated region $regionName to area with respawn time of ${respawnTime}s.")
                     }
                     else -> {
                         printUse(player, RootCommand.modify)
