@@ -8,10 +8,10 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/space/mori/regenblock/command/CommandBase.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/space/mori/regenblock/command/CommandBase.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/space/mori/regenblock/command/RegenBlockCommandExecutor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/space/mori/regenblock/command/RegenBlockCommandExecutor.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,11 +35,6 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="RegenBlock" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="RegenBlock" type="f1a62948:ProjectNode" />
-                <item name="Source Sets" type="e897c970:GradleViewContributor$SourceSetsNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -74,14 +69,13 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../mcMMO" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Facets" />
     <property name="project.structure.proportion" value="0.15" />
@@ -128,6 +122,25 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="RegenBlock [knows]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="knows" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="RegenBlock [shadowJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -149,23 +162,12 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.RegenBlock [clean]" />
+        <item itemvalue="Gradle.RegenBlock [knows]" />
         <item itemvalue="Gradle.RegenBlock [shadowJar]" />
+        <item itemvalue="Gradle.RegenBlock [clean]" />
         <item itemvalue="Gradle.RegenBlock [assemble]" />
       </list>
     </recent_temporary>
-  </component>
-  <component name="ServiceViewManager">
-    <option name="viewStates">
-      <list>
-        <serviceView>
-          <treeState>
-            <expand />
-            <select />
-          </treeState>
-        </serviceView>
-      </list>
-    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -196,53 +198,54 @@
       <workItem from="1576241492281" duration="1524000" />
       <workItem from="1576394159585" duration="50000" />
       <workItem from="1576394218406" duration="204000" />
+      <workItem from="1576512422742" duration="19000" />
+      <workItem from="1577540926276" duration="977000" />
+      <workItem from="1589040234544" duration="39000" />
+      <workItem from="1589040347304" duration="91000" />
+      <workItem from="1589040597614" duration="24000" />
+      <workItem from="1589040632876" duration="419000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="640" y="245" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1576394206077">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="640" y="274" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1589040253335">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="640" y="245" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1576394206077" />
-    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1575693546382">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="640" y="274" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1589040253335" />
+    <state width="1877" height="293" key="GridCell.Tab.0.bottom" timestamp="1589041046407">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="740" y="274" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1575693546382" />
-    <state width="1877" height="281" key="GridCell.Tab.0.bottom" timestamp="1575463551387">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="293" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1589041046407" />
+    <state width="1877" height="293" key="GridCell.Tab.0.center" timestamp="1589041046407">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1575463551387" />
-    <state width="1877" height="281" key="GridCell.Tab.0.center" timestamp="1575463551387">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="293" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1589041046407" />
+    <state width="1877" height="293" key="GridCell.Tab.0.left" timestamp="1589041046407">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1575463551387" />
-    <state width="1877" height="281" key="GridCell.Tab.0.left" timestamp="1575463551387">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="293" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1589041046407" />
+    <state width="1877" height="293" key="GridCell.Tab.0.right" timestamp="1589041046407">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1575463551387" />
-    <state width="1877" height="281" key="GridCell.Tab.0.right" timestamp="1575463551387">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="293" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1589041046407" />
+    <state x="461" y="184" key="SettingsEditor" timestamp="1589040774261">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575463551387" />
-    <state x="461" y="161" key="SettingsEditor" timestamp="1576394416602">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="461" y="161" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1576394416602" />
+    <state x="461" y="184" key="SettingsEditor/0.0.1920.1080@0.0.1920.1080" timestamp="1589040774261" />
   </component>
 </project>
